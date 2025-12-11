@@ -14,8 +14,8 @@ enum class BoardMark : char {
 };
 
 //Funções:
-bool detect_victory(BoardMark matrix[PROFUNDIDADE][LINHA][COLUNA], int index_played);
-void init(BoardMark matrix[PROFUNDIDADE][LINHA][COLUNA]);
+bool detect_victory(BoardMark matrix[PROFUNDIDADE][LINHA][COLUNA], BoardMark winnerMatrix[LINHA][COLUNA], int index_played);
+void init(BoardMark matrix[PROFUNDIDADE][LINHA][COLUNA], BoardMark winnerMatrix[LINHA][COLUNA]);
 //void play(BoardMark matrix[PROFUNDIDADE][LINHA][COLUNA], int max_plays);
 //void print(BoardMark matrix[PROFUNDIDADE][LINHA][COLUNA]);
 void drawUltimateBoard();

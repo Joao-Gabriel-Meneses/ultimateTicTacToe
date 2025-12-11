@@ -3,6 +3,7 @@
 #include "estrutura.hpp"
 
 BoardMark matrix[PROFUNDIDADE][LINHA][COLUNA];
+BoardMark winnerMatrix[1][LINHA][COLUNA];
 BoardMark currentPlayer = BoardMark::XMARK;
 
 const int screenSize = 600;
@@ -124,7 +125,7 @@ void handleMouseInput() {
         if (bigLin >= 0 && bigLin < 3 && bigCol >= 0 && bigCol < 3) {
             
             // Verifica se a célula está vazia E se o mini-tabuleiro ainda não foi vencido
-            if (matrix[boardIndex][smallLin][smallCol] == BoardMark::EMPTY && !detect_victory(matrix, boardIndex)) {
+            if (matrix[boardIndex][smallLin][smallCol] == BoardMark::EMPTY && detect_victory(matrix, boardIndex) == 0) {
                 
                 matrix[boardIndex][smallLin][smallCol] = currentPlayer;
                 
@@ -155,7 +156,7 @@ int main(void) {
             int selected = drawWelcomeScreen();
             
             if (selected != -1) {
-                init(matrix); 
+                init(matrix, winnerMatrix); 
                 inWelcomeScreen = false;
 
                 switch(selected) {

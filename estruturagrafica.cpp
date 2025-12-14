@@ -3,7 +3,9 @@
 #include "estrutura.hpp"
 
 BoardMark matrix[PROFUNDIDADE][LINHA][COLUNA];
-BoardMark currentPlayer = BoardMark::XMARK;
+BoardMark currentPlayer;
+int mustPlayBoardIndex = -1;
+bool isRobotGame;
 
 const int screenSize = 600;
 const int bigCellSize = screenSize / 3;
@@ -27,11 +29,11 @@ Button buttons[3];
 void initWelcomeButtons()
 {
     buttons[0].rect = (Rectangle) {100, 200, 300, 40};
-    buttons[0].label = "Jogador X";
+    buttons[0].label = "Começar com X";
     buttons[0].color = LIGHTGRAY;
 
     buttons[1].rect = (Rectangle){100, 250, 300, 40};
-    buttons[1].label = "Jogador O";
+    buttons[1].label = "Começar com O";
     buttons[1].color = LIGHTGRAY;
 
     buttons[2].rect = (Rectangle){ 100, 300, 300, 40 };
@@ -56,7 +58,13 @@ int drawWelcomeScreen()
         DrawText(buttons[i].label, buttons[i].rect.x + 10, buttons[i].rect.y + 10, 20, BLACK);
 
         // Verifica clique
-        if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && CheckCollisionPointRec(mousePos, buttons[i].rect)) {
+        if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && CheckCollisionPointRec(mousePos, buttons[i].rect)) 
+        {
+            if(i == 0 || i == 2)
+                currentPlayer = BoardMark :: XMARK;
+            if(i == 1)
+                currentPlayer = BoardMark :: OMARK;
+
             clickedButton = i;
         }
     }
@@ -65,6 +73,17 @@ int drawWelcomeScreen()
 }
 
 void drawUltimateBoard() {
+
+    if(mustPlayBoardIndex != -1){
+        int targetBigLin = mustPlayBoardIndex / 3;
+        int targetBigCol = mustPlayBoardIndex % 3;
+
+        int startCol = targetBigCol * bigCellSize;
+        int startLin = targetBigLin * bigCellSize;
+
+        DrawRectangle(startCol, startLin, bigCellSize, bigCellSize, YELLOW);
+    }
+
     // Tabuleiro grande
     for (int i = 1; i < 3; i++) {
         DrawLine(i * bigCellSize, 0, i * bigCellSize, screenSize, BLACK);
@@ -111,28 +130,46 @@ void drawMarks() {
 }
 
 // Funções de input
-void handleMouseInput() {
-    if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+void handleMouseInput(){
+    if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+    {
         Vector2 mouse = GetMousePosition();
         int bigCol = mouse.x / bigCellSize;
         int bigLin = mouse.y / bigCellSize;
         int smallCol = (int(mouse.x) % bigCellSize) / smallCellSize;
         int smallLin = (int(mouse.y) % bigCellSize) / smallCellSize;
+
+        //converter coordenadas (linha e coluna) em um índice único de uma lista (array)
         int boardIndex = bigLin * 3 + bigCol; 
+        int nextPosPlay = smallLin * 3 + smallCol;
 
         // verificação de limites
-        if (bigLin >= 0 && bigLin < 3 && bigCol >= 0 && bigCol < 3) {
+        if (bigLin >= 0 && bigLin < 3 && bigCol >= 0 && bigCol < 3) 
+        {
+
+            bool IsPlayAllowed = (mustPlayBoardIndex == -1) || (boardIndex == mustPlayBoardIndex); 
             
-            // Verifica se a célula está vazia E se o mini-tabuleiro ainda não foi vencido
-            if (matrix[boardIndex][smallLin][smallCol] == BoardMark::EMPTY && !detect_victory(matrix, boardIndex)) {
-                
-                matrix[boardIndex][smallLin][smallCol] = currentPlayer;
-                
-                // Alterna o jogador
-                if (currentPlayer == BoardMark::XMARK)
+            if(IsPlayAllowed)
+            {    
+                // Verifica se a célula está vazia E se o mini-tabuleiro ainda não foi vencido
+                if (matrix[boardIndex][smallLin][smallCol] == BoardMark::EMPTY && !detect_victory(matrix, boardIndex) && matrix[nextPosPlay])
+                {
+                    //Atualiza o mini-tabuleiro obrigatório
+                    mustPlayBoardIndex = nextPosPlay; 
+
+                    //Atualiza o jogador
+                    matrix[boardIndex][smallLin][smallCol] = currentPlayer;
+                    
+                    //Regra da Exceção:
+                    if(detect_victory(matrix, mustPlayBoardIndex) || isBoardFull(matrix, mustPlayBoardIndex))
+                        mustPlayBoardIndex = -1;
+
+                    // Alterna o jogador
+                    if (currentPlayer == BoardMark::XMARK)
                     currentPlayer = BoardMark::OMARK;
-                else
+                    else
                     currentPlayer = BoardMark::XMARK;
+                }
             }
         }
     }
@@ -161,13 +198,25 @@ int main(void) {
                 switch(selected) {
                     case 0: /* jogador X */ break;
                     case 1: /* jogador O */ break;
-                    case 2: /* jogar contra robô */ break;
+                    case 2: /* jogar contra robô */ 
+                    isRobotGame = true;
+                    break;
                 }
             }
         } else {
             drawUltimateBoard();
             drawMarks();
-            handleMouseInput();
+
+            // Implementação do modo jogar contra Robô
+            if(isRobotGame && currentPlayer == BoardMark :: OMARK)
+            {
+                WaitTime(0.5);
+                robotPlay(matrix,mustPlayBoardIndex,currentPlayer);
+            }
+            else if (!isRobotGame || (isRobotGame && currentPlayer == BoardMark :: XMARK))
+            {
+                handleMouseInput();
+            }
             // Futuramente: Checar vitória global e desenhar tela de fim de jogo
         }
 

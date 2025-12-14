@@ -24,7 +24,7 @@ struct UltimateTicTacToe{
 
 //Funções:
 bool detect_victory(BoardMark matrix[PROFUNDIDADE][LINHA][COLUNA], int index_played);
-void init(BoardMark matrix[PROFUNDIDADE][LINHA][COLUNA]);
+void init(BoardMark matrix[PROFUNDIDADE][LINHA][COLUNA], BoardMark winnerMatrix[LINHA][COLUNA]);
 bool isBoardFull (BoardMark matrix[PROFUNDIDADE][LINHA][COLUNA], int index_played);
 void robotPlay(BoardMark matrix[PROFUNDIDADE][LINHA][COLUNA], int& mustPlayBoardIndex, BoardMark& currentPlayer);
 void drawUltimateBoard();

@@ -4,6 +4,7 @@
 
 BoardMark matrix[PROFUNDIDADE][LINHA][COLUNA];
 BoardMark currentPlayer;
+BoardMark winnerMatrix[LINHA][COLUNA];
 int mustPlayBoardIndex = -1;
 bool isRobotGame;
 
@@ -192,7 +193,7 @@ int main(void) {
             int selected = drawWelcomeScreen();
             
             if (selected != -1) {
-                init(matrix); 
+                init(matrix, winnerMatrix); 
                 inWelcomeScreen = false;
 
                 switch(selected) {

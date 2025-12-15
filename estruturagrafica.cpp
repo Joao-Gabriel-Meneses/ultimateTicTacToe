@@ -206,11 +206,11 @@ void askForSave(bool ignoreSave)
         fflush(stdout); 
         scanf("%c", &ans);
         
-        // if (scanf(" %c", &ans) != 1) { 
+        /*if (scanf(" %c", &ans) != 1) { 
         //      int c;
         //      while ((c = getchar()) != '\n' && c != EOF);
         //      continue;
-        // }
+         } */ 
 
         // if (ans >= 'a' && ans <= 'z') {
         //     ans = ans - 'a' + 'A';

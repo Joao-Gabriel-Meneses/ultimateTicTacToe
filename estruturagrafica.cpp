@@ -190,6 +190,32 @@ void drawMarks()
     }
 }
 
+void cleanmatrix(BoardMark matrix[PROFUNDIDADE][LINHA][COLUNA], int index_played)
+{
+    Rectangle detectdelete = {screenSize / 2 - 100, 300, 200, 50};
+       char cclear;
+     if (CheckCollisionPointRec(GetMousePosition(), detectdelete) && IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)) 
+     {
+         if(1) 
+         {
+             printf("\nDeseja apagar o tabuleiro atual? (S/N): ");
+             fflush(stdout); 
+             scanf("%c", &cclear);
+     
+              if(cclear == 'S' || cclear == 's') 
+              {
+                for(int i = 0 ; i < LINHA; i++)
+                {
+                    for(int j = 0; j < COLUNA; j++)
+                    {
+                        matrix[index_played][i][j] = BoardMark :: EMPTY;
+                    }
+                }
+              }
+         }
+    
+    }
+}
 
 void askForSave(bool ignoreSave) 
 {
@@ -205,16 +231,6 @@ void askForSave(bool ignoreSave)
         printf("\nDeseja salvar o jogo atual? (S/N): ");
         fflush(stdout); 
         scanf("%c", &ans);
-        
-        /*if (scanf(" %c", &ans) != 1) { 
-        //      int c;
-        //      while ((c = getchar()) != '\n' && c != EOF);
-        //      continue;
-         } */ 
-
-        // if (ans >= 'a' && ans <= 'z') {
-        //     ans = ans - 'a' + 'A';
-        // }
 
         if (ans == 'S' || ans == 'N' || ans == 's' || ans == 'n')  
             break;
@@ -362,6 +378,7 @@ int main(void)
         {
             drawUltimateBoard();
             drawMarks();
+            cleanmatrix(matrix, mustPlayBoardIndex);
 
             // Implementação do modo jogar contra Robô
             if(isRobotGame && currentPlayer == BoardMark :: OMARK)

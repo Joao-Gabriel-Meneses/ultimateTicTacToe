@@ -1,5 +1,3 @@
-#ifndef ESTRUTURA_HPP
-#define ESTRUTURA_HPP
 
 #include <stdio.h>
 
@@ -29,6 +27,7 @@ BoardMark detectGlobalVictory(BoardMark winnerMatrix[LINHA][COLUNA]);
 void init(BoardMark matrix[PROFUNDIDADE][LINHA][COLUNA], BoardMark winnerMatrix[LINHA][COLUNA]);
 bool isBoardFull (BoardMark matrix[PROFUNDIDADE][LINHA][COLUNA], int index_played);
 void robotPlay(BoardMark matrix[PROFUNDIDADE][LINHA][COLUNA], BoardMark winnerMatrix[LINHA][COLUNA], int& mustPlayBoardIndex, BoardMark& currentPlayer);
+void cleanmatrix(BoardMark matrix[PROFUNDIDADE][LINHA][COLUNA], int index_played);
 
 //Interface Gráfica:
 void drawUltimateBoard();
@@ -52,4 +51,3 @@ void saveGame(const UltimateTicTacToe *jogo, const char *nome_arquivo);
 int loadGame(UltimateTicTacToe *jogo, const char *nome_arquivo);
 void DeleteGame(const char *nome_arquivo);
 
-#endif 
